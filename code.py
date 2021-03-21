@@ -1,8 +1,26 @@
-adders = []
+def counter(fn):
+    """Bu fonksiyon bir 'decorator' olup çıkışa "inner" adında bir 'closure' iletir. İçerdeki inner fonksiyonu,
+    kullanılacak asıl fonksiyonları modifiye eder. Burada modifiye olayı kullanılan fonksiyonun kaçıncı defa
+    çağırıldığını ekrana basma'dır. """
+    count = 0
 
-for n in range(1, 4):
-    adders.append(lambda x, a=n: x + a)
+    def inner(*args, **kwargs):  # "positional" ve "keyword" değişkenleri paketle
+        nonlocal count  # dış fonksiyondaki count etiketinin referansına ulaş
+        count += 1
+        print(f'{fn.__name__} fonksiyonu {count}. defa çağırılıyor')
+        return fn(*args, **kwargs)  # paketlenmiş değişkenleri ayıkla ve fonksiyona girdirt
+    return inner
 
-print(adders[0](10))  # sonuç 11.
-# Bu durum aslında fonksiyon yaratılmasıyla ilişkili. Fonksiyon parametresine atanan varsayılan değer aynen tutulur ve fonksiyon 
-# çağırılırken de bu değer kullanılır. 
+
+def add(a, b):
+    return a + b
+
+
+def mult(a, b):
+    return a * b
+
+
+#-----------
+add = counter(add)
+mult = counter(mult)
+#-----------
